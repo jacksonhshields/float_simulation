@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Center of buoyancy -->
+<!--    <xacro:property name="bffv1_cob" value="0 0 0.15"/>-->
+
+    <!-- Vehicle's actual volume (Gazebo cannot compute the volume out of the mesh) -->
+<!--    <xacro:property name="bffv1_volume" value="0.00486439"/>-->
+<!--    <xacro:property name="bffv1_volume" value="0.00625"/>-->
+
+    <!-- Describing the dimensions of the vehicle's bounding box -->
+<!--    <xacro:property name="bffv1_length" value="0.106"/>-->
+<!--    <xacro:property name="bffv1_width"  value="0.106"/>-->
+<!--    <xacro:property name="bffv1_height" value="0.6"/>-->
+
+<!--    <box>-->
+<!--        <width>${x_size}</width>-->
+<!--        <length>${y_size}</length>-->
+<!--        <height>${z_size}</height>-->
+<!--    </box>-->
+
+    <xacro:macro name="bffv1_hydro_model" params="namespace">
+      <!-- List of hydrodynamic models this robot's links -->
+      <link name="${namespace}/base_link">
+        <!-- This flag will make the link neutrally buoyant -->
+        <neutrally_buoyant>0</neutrally_buoyant>
+
+        <!-- Link's volume -->
+<!--        <volume>${bffv1_volume}</volume>-->
+          <volume>${volume}</volume>
+
+        <!-- Link's bounding box, it is used to recalculate the immersed
+        volume when close to the surface.
+        This is a workaround the invalid bounding box given by Gazebo-->
+<!--        <box>-->
+<!--          <width>${bffv1_width}</width>-->
+<!--          <length>${bffv1_length}</length>-->
+<!--          <height>${bffv1_height}</height>-->
+<!--        </box>-->
+          <box>
+              <width>${x_size}</width>
+              <length>${y_size}</length>
+              <height>${z_size}</height>
+          </box>
+
+        <!-- Center of buoyancy -->
+<!--        <center_of_buoyancy>${bffv1_cob}</center_of_buoyancy>-->
+        <center_of_buoyancy>${cob}</center_of_buoyancy>
+
+        <!--
+        Choose one of the hydrodynamic models below, all are based on
+        Fossen's equation of motion for underwater vehicles
+
+        Reference:
+        [1] Fossen, Thor I. Handbook of marine craft hydrodynamics and motion
+            control. John Wiley & Sons, 2011.
+        -->
+
+          <!-- Cylinder wasn't working !!!
+        <hydrodynamic_model>
+          <type>cylinder</type>
+          <radius>0.0501</radius>
+          <lenght>0.6</lenght>
+          <mass>6.25</mass>
+        </hydrodynamic_model> -->
+
+<!--      <hydrodynamic_model>-->
+<!--        <type>sphere</type>-->
+<!--          <radius>0.0501</radius>-->
+<!--          <mass>6.25</mass>-->
+<!--      </hydrodynamic_model>-->
+
+          <hydrodynamic_model>
+          <type>fossen</type>
+          <!-- Added mass: see p.28 in Berg2012 -->
+          <added_mass>
+              1.7182 0 0 0 0 0
+              0 0 0 0 0 0
+              0 0 5.468 0 0 0
+              0 0 0 0 0 0
+              0 0 0 0 1.2481 0
+              0 0 0 0 0 0.4006
+          </added_mass>
+
+          <linear_damping>
+              -11.7391 -20 -31.8678 -25 -44.9085 -5
+          </linear_damping>
+          <quadratic_damping>
+              0 0 0 0 0 0
+          </quadratic_damping>
+          </hydrodynamic_model>
+
+
+      </link>
+    </xacro:macro>
+
+</robot>
