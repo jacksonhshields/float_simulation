@@ -1,0 +1,11 @@
+<launch>
+    <node name="bridge" pkg="bff_sim_utils" type="bridge_topics">
+    </node>
+
+    <node name="gps_relay" pkg="topic_tools" type="relay" args="/bffv1/gps /navio/gps"/>
+    <node name="imu_relay" pkg="topic_tools" type="relay" args="/bffv1/imu /rtimulib_node/imu"/>
+    <node name="ping_relay" pkg="topic_tools" type="relay" args="/bffv1/ping /ping"/>
+    <node name="image_relay" pkg="topic_tools" type="relay" args="/bffv1/bffv1/camera/camera_image /fisheye/image_raw"/>
+    <node name="camera_info_relay" pkg="topic_tools" type="relay" args="/bffv1/bffv1/camera/camera_info /fisheye/camera_info"/>
+
+</launch>

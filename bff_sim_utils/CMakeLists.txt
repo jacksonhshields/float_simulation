@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  uuv_gazebo_ros_plugins_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -152,6 +153,9 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+add_executable(bridge_topics src/bridge_topics.cpp)
+target_link_libraries(bridge_topics ${catkin_LIBRARIES})
 
 #############
 ## Install ##
