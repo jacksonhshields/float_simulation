@@ -98,8 +98,8 @@
             </vertical>
           </scan>
           <range>
-            <min>0.55</min>
-            <max>81</max>
+            <min>0.1</min>
+            <max>30.0</max>
             <resolution>0.01</resolution>
           </range>
         </ray>
