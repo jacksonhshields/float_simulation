@@ -34,11 +34,11 @@ public:
     {
         depthPub_ = nh_.advertise<std_msgs::Float64>("depth", 1);
         depthStampedPub_ = nh_.advertise<geometry_msgs::Vector3Stamped>("depth_stamped", 1);
-        thruster0Pub_ = nh_.advertise<uuv_gazebo_ros_plugins_msgs::FloatStamped>("/bffv1/thrusters/0/input", 1);
-        thruster1Pub_ = nh_.advertise<uuv_gazebo_ros_plugins_msgs::FloatStamped>("/bffv1/thrusters/1/input", 1);
+        thruster0Pub_ = nh_.advertise<uuv_gazebo_ros_plugins_msgs::FloatStamped>("bffv1/thrusters/0/input", 1);
+        thruster1Pub_ = nh_.advertise<uuv_gazebo_ros_plugins_msgs::FloatStamped>("bffv1/thrusters/1/input", 1);
 
         thrusterCmdSub_ = nh_.subscribe("thruster_cmd", 1, &Bridger::thrusterCmdCallback, this);
-        poseSub_ = nh_.subscribe("/bffv1/pose_gt", 1, &Bridger::poseCallback, this);
+        poseSub_ = nh_.subscribe("bffv1/pose_gt", 1, &Bridger::poseCallback, this);
 
     }
     void thrusterCmdCallback(const std_msgs::Float64::ConstPtr& msg)
@@ -58,7 +58,7 @@ public:
 
     void poseCallback(const nav_msgs::Odometry::ConstPtr& msg)
     {
-        double depth = msg->pose.pose.position.z;
+        double depth = -msg->pose.pose.position.z;
         std_msgs::Float64 depth_msg;
         depth_msg.data = depth;
         depthPub_.publish(depth_msg);
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 
     ros::init(argc, argv, "bridger");
 
-    Bridger bridger();
+    Bridger bridger;
 
     ros::spin();
 

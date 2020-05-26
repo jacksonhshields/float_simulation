@@ -1,5 +1,5 @@
 <launch>
-    <node name="bridge" pkg="bff_sim_utils" type="bridge_topics">
+    <node name="bridge" pkg="bff_sim_utils" type="bridge_topics" output="screen">
     </node>
 
     <node name="gps_relay" pkg="topic_tools" type="relay" args="/bffv1/gps /navio/gps"/>
