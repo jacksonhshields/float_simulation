@@ -24,13 +24,20 @@
 <!--  <xacro:property name="mass" value="6.25"/>-->
 
   <!-- Describing the dimensions of the vehicle's bounding box: width, length, height -->
+  <!-- BLUEROV2 -->
+  <!--
   <xacro:property name="x_size" value="0.448"/>
   <xacro:property name="y_size" value="0.2384"/>
   <xacro:property name="z_size" value="0.28066"/>
-  <!-- minion_usv_height is not really! It's just for run... We need first calculate the Fossen parameters -->
-  <!-- Volume -->
-  <xacro:property name="volume" value="0.011054"/>
-<!--  <xacro:property name="volume" value="0.00625"/>-->
+  -->
+
+  <!-- Float -->
+  <xacro:property name="x_size" value="0.106"/>
+  <xacro:property name="y_size" value="0.106"/>
+  <xacro:property name="z_size" value="0.6"/>
+
+  <!-- <xacro:property name="volume" value="0.011054"/> --> <!-- BLUEROV2 -->
+  <xacro:property name="volume" value="0.00625"/>
   <xacro:property name="cog" value="0 0 0"/>
   <xacro:property name="cob" value="0 0 0"/>
   <!-- Fluid density -->
@@ -61,21 +68,23 @@
           Be careful to setup the coefficients for the inertial tensor,
           otherwise your model will become unstable on Gazebo
         -->
-<!--        <inertial>-->
-<!--          <mass value="${mass}" />-->
-<!--          <origin xyz="${cog}" rpy="0 0 0"/>-->
-<!--          <inertia ixx="0.19153225" ixy="0" ixz="0"-->
-<!--                   iyy="0.19153225" iyz="0"-->
-<!--                   izz="0.0080645" />-->
-<!--        </inertial>-->
+        <!-- From basic cylinder-->
         <inertial>
           <mass value="${mass}" />
           <origin xyz="${cog}" rpy="0 0 0"/>
-          <inertia
-                  ixx="${0.2*mass*y_size*y_size + 0.2*mass*z_size*z_size}" ixy="0.0" ixz="0.0"
-                  iyy="${0.2*mass*x_size*x_size + 0.2*mass*z_size*z_size}" iyz="0.0"
-                  izz="${0.2*mass*x_size*x_size + 0.2*mass*y_size*y_size}" />
+          <inertia ixx="0.19153225" ixy="0" ixz="0"
+                   iyy="0.19153225" iyz="0"
+                   izz="0.0080645" />
         </inertial>
+        <!-- BLUEROV2-->
+<!--        <inertial>-->
+<!--          <mass value="${mass}" />-->
+<!--          <origin xyz="${cog}" rpy="0 0 0"/>-->
+<!--          <inertia-->
+<!--                  ixx="${0.2*mass*y_size*y_size + 0.2*mass*z_size*z_size}" ixy="0.0" ixz="0.0"-->
+<!--                  iyy="${0.2*mass*x_size*x_size + 0.2*mass*z_size*z_size}" iyz="0.0"-->
+<!--                  izz="${0.2*mass*x_size*x_size + 0.2*mass*y_size*y_size}" />-->
+<!--        </inertial>-->
 
 
         <visual>

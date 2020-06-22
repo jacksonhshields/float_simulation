@@ -73,6 +73,9 @@
           <hydrodynamic_model>
           <type>fossen</type>
           <!-- Added mass: see p.28 in Berg2012 -->
+
+              <!-- BLUEROV2 -->
+              <!--
           <added_mass>
               1.7182 0 0 0 0 0
               0 0 0 0 0 0
@@ -81,14 +84,29 @@
               0 0 0 0 1.2481 0
               0 0 0 0 0 0.4006
           </added_mass>
-
           <linear_damping>
               -11.7391 -20 -31.8678 -25 -44.9085 -5
           </linear_damping>
           <quadratic_damping>
               0 0 0 0 0 0
           </quadratic_damping>
-          </hydrodynamic_model>
+          -->
+          <!-- From Calcs -->
+          <added_mass>
+              0 0 0 0 0 0
+              0 0 0 0 0 0
+              0 0 3.68 0 0 0
+              0 0 0 0.175 0 0
+              0 0 0 0 0.175 0
+              0 0 0 0 0 0.0
+          </added_mass>
+          <linear_damping>
+              -0.1 -0.1 -0.1 -0.1 -0.1 -0.1
+          </linear_damping>
+          <quadratic_damping>
+              0 0 0 0 0 0
+          </quadratic_damping>
+        </hydrodynamic_model>
 
 
       </link>
