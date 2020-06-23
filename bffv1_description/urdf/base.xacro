@@ -20,8 +20,8 @@
 <!--  <xacro:property name="rho" value="1028"/>-->
 
 
-  <xacro:property name="mass" value="11.38"/>
-<!--  <xacro:property name="mass" value="6.25"/>-->
+<!--  <xacro:property name="mass" value="11.38"/>-->
+  <xacro:property name="mass" value="6.25"/>
 
   <!-- Describing the dimensions of the vehicle's bounding box: width, length, height -->
   <!-- BLUEROV2 -->
