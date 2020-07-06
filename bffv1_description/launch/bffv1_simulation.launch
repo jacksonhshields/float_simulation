@@ -1,4 +1,7 @@
 <launch>
+    <arg name="use_lag" value="true"/>
+    <arg name="ping_lag" value="2.0"/>
+
     <include file="$(find bffv1_description)/launch/upload.launch">
         <arg name="x" value="0"/>
         <arg name="y" value="0"/>
@@ -20,7 +23,20 @@
         <param name="topic_from_controller" value="thruster_cmd"/>
     </node>
 
-    <!-- Start the static depth controller -->
-    <node name="controller" pkg="float_control" type="unified_controller.py">
-    </node>
+    <group if="$(arg use_lag)">
+        <node name="lagger" pkg="bff_sim_utils" type="publish_ping_lag.py">
+            <param name="ping_lag" value="$(arg ping_lag)"/>
+        </node>
+        <!-- Start the static depth controller -->
+        <node name="controller" pkg="float_control" type="unified_controller.py">
+            <param name="ping_lag" value="$(arg ping_lag)"/>
+            <param name="use_lag_control" value="false"/>
+            <remap from="ping" to="ping_lag"/>
+        </node>
+    </group>
+    <group unless="$(arg use_lag)">
+        <!-- Start the static depth controller -->
+        <node name="controller" pkg="float_control" type="unified_controller.py">
+        </node>
+    </group>
 </launch>
