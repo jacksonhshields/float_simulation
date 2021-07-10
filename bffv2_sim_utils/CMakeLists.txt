@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(bff_sim_utils)
+project(bffv2_sim_utils)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   uuv_gazebo_ros_plugins_msgs
+  float_sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -154,8 +155,8 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(bridge_topics src/bridge_topics.cpp)
-target_link_libraries(bridge_topics ${catkin_LIBRARIES})
+add_executable(bridge_topics_v2 src/bridge_topics_v2.cpp)
+target_link_libraries(bridge_topics_v2 ${catkin_LIBRARIES} )
 
 #############
 ## Install ##

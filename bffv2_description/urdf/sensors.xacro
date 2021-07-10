@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!--
+    Some examples of sensors that can be added to the vehicle frame.
+    Set the origin of the sensor frames correctly for your application
+    Look into the sensor macros in the package uuv_sensor_ros_plugins/urdf for
+    more examples or add you own custom sensor units.
+  -->
+
+  <!-- Mount a Pose 3D sensor. -->
+  <xacro:default_pose_3d namespace="${namespace}" parent_link="${namespace}/base_link" />
+
+
+  <!-- Mount a GPS. -->
+  <xacro:default_gps namespace="${namespace}" parent_link="${namespace}/base_link" />
+
+  <!-- Pressure  -->
+  <xacro:default_pressure namespace="${namespace}" parent_link="${namespace}/base_link">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:default_pressure>
+
+  <!-- IMU  -->
+  <xacro:default_imu namespace="${namespace}" parent_link="${namespace}/base_link">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:default_imu>
+
+  <!-- Mount a camera  -->
+  <xacro:wideangle_camera namespace="${namespace}" parent_link="${namespace}/base_link" suffix="">
+    <origin xyz="0 0 -0.4" rpy="0 1.57 0"/>
+  </xacro:wideangle_camera>
+
+  <!-- Full DVL - too big -->
+<!--  <xacro:default_dvl_macro-->
+<!--          namespace="${namespace}"-->
+<!--          parent_link="${namespace}/base_link"-->
+<!--          inertial_reference_frame="world">-->
+<!--    <origin xyz="0.12 0 -0.312" rpy="0 ${0.5*pi} 0"/>-->
+<!--  </xacro:default_dvl_macro>-->
+
+
+  <!-- Ping Sonar -->
+  <xacro:macro name="default_ping_macro" params="namespace parent_link *origin inertial_reference_frame">
+    <xacro:ping_plugin_macro
+            namespace="${namespace}"
+            suffix=""
+            parent_link="${parent_link}"
+            reference_frame="${inertial_reference_frame}"
+            update_rate="10"
+            topic="ping"
+            noise_sigma="0"
+            noise_amplitude="0"
+            scale="1">
+      <xacro:insert_block name="origin" />
+    </xacro:ping_plugin_macro>
+  </xacro:macro>
+
+  <xacro:macro name="ping_plugin_macro"
+    params="namespace suffix parent_link topic scale *origin update_rate reference_frame noise_sigma noise_amplitude">
+    <link name="${namespace}/ping_link">
+      <inertial>
+        <mass value="0.001" />  <!-- [kg] -->
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <inertia ixx="0.000000017" ixy="0" ixz="0" iyy="0.000000017" iyz="0" izz="0.000000017" />
+      </inertial>
+      <visual>
+        <geometry>
+          <mesh filename="file://$(find bffv2_description)/meshes/ping_sonar.dae" scale="${scale} ${scale} ${scale}"/>
+        </geometry>
+      </visual>
+      <xacro:no_collision/>
+    </link>
+    <joint name="${namespace}/ping_joint" type="revolute">
+      <xacro:insert_block name="origin" />
+      <parent link="${parent_link}" />
+      <child link="${namespace}/ping_link" />
+      <limit upper="0" lower="0" effort="0" velocity="0" />
+      <axis xyz="1 0 0"/>
+    </joint>
+    <gazebo reference="${namespace}/ping_link">
+      <sensor type="ray" name="ping">
+        <pose>0 0 0 0 0 0</pose>
+        <update_rate>${update_rate}</update_rate>
+        <visualize>false</visualize>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>3</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.03</min_angle>
+              <max_angle>0.03</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>3</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.03</min_angle>
+              <max_angle>0.03</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.1</min>
+            <max>30.0</max>
+            <resolution>0.01</resolution>
+          </range>
+        </ray>
+
+        <plugin filename="libgazebo_ros_range.so" name="ping">
+          <gaussianNoise>0.005</gaussianNoise>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>${update_rate}</updateRate>
+          <topicName>ping</topicName>
+          <frameName>${namespace}/ping_link</frameName>
+          <fov>0.06</fov>
+          <radiation>ultrasound</radiation>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:default_ping_macro
+          namespace="${namespace}"
+          parent_link="${namespace}/base_link"
+          inertial_reference_frame="world">
+    <origin xyz="0.12 0 -0.312" rpy="0 ${0.5*pi} 0"/>
+  </xacro:default_ping_macro>
+
+
+
+
+</robot>

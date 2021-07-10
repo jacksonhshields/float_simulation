@@ -3,11 +3,11 @@
     <arg name="ping_lag" value="2.0"/>
 
     <include file="$(find bffv1_description)/launch/upload.launch">
-        <arg name="x" value="0"/>
-        <arg name="y" value="0"/>
-        <arg name="z" value="-60"/>
+        <arg name="x" value="20"/>
+        <arg name="y" value="30"/>
+        <arg name="z" value="-1"/>
     </include>
-    <include file="$(find bff_sim_utils)/launch/simulation_to_real_bridge.launch"/>
+    <include file="$(find bffv1_sim_utils)/launch/simulation_to_real_bridge.launch"/>
     <!-- Start the PID -->
     <node name="depth_pid" pkg="pid" type="controller" >
         <param name="Kp" value="0.4" />
@@ -24,7 +24,7 @@
     </node>
 
     <group if="$(arg use_lag)">
-        <node name="lagger" pkg="bff_sim_utils" type="publish_ping_lag.py">
+        <node name="lagger" pkg="bffv1_sim_utils" type="publish_ping_lag.py">
             <param name="ping_lag" value="$(arg ping_lag)"/>
         </node>
         <!-- Start the static depth controller -->

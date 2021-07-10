@@ -1,0 +1,96 @@
+<launch>
+    <arg name="use_lag" value="true"/>
+    <arg name="ping_lag" value="2.0"/>
+    <arg name="use_visual_altitude" default="false"/>
+    <arg name="bff" default="true"/>
+
+    <include file="$(find bffv2_description)/launch/upload.launch">
+        <arg name="x" value="20"/>
+        <arg name="y" value="30"/>
+        <arg name="z" value="-1"/>
+    </include>
+    <include file="$(find bffv2_sim_utils)/launch/simulation_to_real_bridge.launch"/>
+    <!-- Start the PID -->
+    <node name="depth_pid" pkg="pid" type="controller" >
+        <param name="Kp" value="0.2" />
+        <param name="Ki" value="0.05" />
+        <param name="Kd" value="0.15" />
+        <param name="upper_limit" value="1.0" />
+        <param name="lower_limit" value="-1.0" />
+        <param name="windup_limit" value="5.0" />
+        <param name="max_loop_frequency" value="100.0" />
+        <param name="min_loop_frequency" value="2.0" />
+        <param name="setpoint_topic" value="depth_target"/>
+        <param name="topic_from_plant" value="pressure_sensor/depth_raw"/>
+        <param name="topic_from_controller" value="thruster_cmd"/>
+    </node>
+
+    <group if="$(arg use_lag)">
+        <node name="lagger" pkg="bffv2_sim_utils" type="publish_ping_lag.py">
+            <param name="ping_lag" value="$(arg ping_lag)"/>
+        </node>
+
+        <group if="$(arg use_visual_altitude)">
+            <!-- Start the static depth controller -->
+            <node name="controller" pkg="float_control" type="unified_controller.py">
+                <param name="ping_lag" value="$(arg ping_lag)"/>
+                <param name="use_lag_control" value="true"/>
+                <remap from="sonar_sensor/range" to="altitude_est"/>
+            </node>
+            <node name="conductor" pkg="float_control" type="mission_conductor.py" output="screen">
+                <remap from="sonar_sensor/range" to="altitude_est"/>
+            </node>
+            <node name="alt_select" pkg="float_control" type="altitude_select" output="screen">
+                <remap from="sonar_sensor/range" to="ping_lag"/>
+            </node>
+            <node name="visual_alt" pkg="float_control" type="alt_est_from_pointcloud.py"/>
+        </group>
+            <group unless="$(arg use_visual_altitude)">
+            <!-- Start the static depth controller -->
+            <node name="controller" pkg="float_control" type="unified_controller.py">
+                <param name="ping_lag" value="$(arg ping_lag)"/>
+                <param name="use_lag_control" value="true"/>
+                <remap from="sonar_sensor/range" to="ping_lag"/>
+            </node>
+            <node name="conductor" pkg="float_control" type="mission_conductor.py" output="screen">
+                <remap from="sonar_sensor/range" to="ping_lag"/>
+            </node>
+        </group>
+
+    </group>
+    <group unless="$(arg use_lag)">
+        <group if="$(arg use_visual_altitude)">
+            <!-- Start the static depth controller -->
+            <node name="controller" pkg="float_control" type="unified_controller.py">
+                <param name="ping_lag" value="$(arg ping_lag)"/>
+                <param name="use_lag_control" value="false"/>
+                <remap from="sonar_sensor/range" to="altitude_est"/>
+            </node>
+            <node name="conductor" pkg="float_control" type="mission_conductor.py" output="screen">
+                <remap from="sonar_sensor/range" to="altitude_est"/>
+            </node>
+            <node name="alt_select" pkg="float_control" type="altitude_select">
+            </node>
+            <node name="visual_alt" pkg="float_control" type="alt_est_from_pointcloud.py"/>
+        </group>
+        <group unless="$(arg use_visual_altitude)">
+            <!-- Start the static depth controller -->
+            <node name="controller" pkg="float_control" type="unified_controller.py" output="screen">
+            </node>
+            <node name="conductor" pkg="float_control" type="mission_conductor.py" output="screen"/>
+        </group>
+    </group>
+
+    <group if="$(arg bff)">
+        <node pkg="float_manager" type="bff_manager.py" name="float2_bff_manager" output="screen">
+            <param name="~float_name" value="float2"/>
+            <param name="~camera_ip" value="102.168.64.202"/>
+        </node>
+        
+        <node name="dummy_bff" pkg="bffv2_sim_utils" type="dummy_bff_services.py">
+        </node>        
+
+    </group>
+
+
+</launch>

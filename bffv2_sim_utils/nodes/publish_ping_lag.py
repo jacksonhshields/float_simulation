@@ -12,7 +12,7 @@ class PingLag:
         self.ping_lag = rospy.get_param("~ping_lag", 2.0)
         self.pings_list = []
         self.times_list = []
-        self.localisationSub_ = rospy.Subscriber("ping", Range, self.pingCallback)
+        self.pingSub_ = rospy.Subscriber("sonar_sensor/range", Range, self.pingCallback)
         self.lagPub_ = rospy.Publisher('ping_lag', Range, queue_size=1)
 
 

@@ -1,0 +1,10 @@
+<launch>
+    <node name="bridge" pkg="bffv2_sim_utils" type="bridge_topics_v2" output="screen">
+    </node>
+    <node name="ping_relay" pkg="topic_tools" type="relay" args="/bffv2/ping /sonar_sensor/range"/>
+    <node name="gps_relay" pkg="topic_tools" type="relay" args="/bffv2/gps /nav_sat_fix"/>
+    <node name="imu_relay" pkg="topic_tools" type="relay" args="/bffv2/imu /rtimulib_node/imu"/>
+    <node name="image_relay" pkg="topic_tools" type="relay" args="/bffv2/bffv2/camera/camera_image /fisheye/image_raw"/>
+    <node name="camera_info_relay" pkg="topic_tools" type="relay" args="/bffv2/bffv2/camera/camera_info /fisheye/camera_info"/>
+
+</launch>
